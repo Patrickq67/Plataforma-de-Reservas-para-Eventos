@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Reservas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h1>Cadastro de Reservas</h1>
+        <form id="cadastroReservaForm">
+            <input type="number" id="cliente_cpf" placeholder="CPF do Cliente" required>
+            <input type="number" id="local_id" placeholder="ID do Local" required>
+            <input type="date" id="data" required>
+            <input type="time" id="horario_inicio" placeholder="Horário de Início" required>
+            <input type="time" id="horario_fim" placeholder="Horário de Fim" required>
+            <input type="number" id="numero_participantes" placeholder="Número de Participantes" required>
+            <select id="status" required>
+                <option value="confirmada">Confirmada</option>
+                <option value="pendente">Pendente</option>
+                <option value="cancelada">Cancelada</option>
+            </select>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('cadastroReservaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const cliente_cpf = document.getElementById('cliente_cpf').value;
+            const local_id = document.getElementById('local_id').value;
+            const data = document.getElementById('data').value;
+            const horario_inicio = document.getElementById('horario_inicio').value;
+            const horario_fim = document.getElementById('horario_fim').value;
+            const numero_participantes = document.getElementById('numero_participantes').value;
+            const status = document.getElementById('status').value;
+
+            const dados = { cliente_cpf, local_id, data, horario_inicio, horario_fim, numero_participantes, status };
+
+            fetch('http://localhost:3000/cadastrarReserva', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Reserva cadastrada com sucesso!');
+                } else {
+                    alert('Erro ao cadastrar reserva.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro na comunicação com o servidor.');
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Serviço</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Adicionar Novo Serviço</h1>
+
+    <form id="form-adicionar-servico">
+        <label for="descricao">Descrição</label>
+        <input type="text" id="descricao" name="descricao" required>
+
+        <label for="preco">Preço (R$)</label>
+        <input type="number" id="preco" name="preco" step="0.01" required>
+
+        <label for="disponibilidade">Disponibilidade</label>
+        <select id="disponibilidade" name="disponibilidade" required>
+            <option value="true">Disponível</option>
+            <option value="false">Indisponível</option>
+        </select>
+
+        <button type="submit">Adicionar Serviço</button>
+    </form>
+
+    <script>
+        document.getElementById('form-adicionar-servico').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const descricao = document.getElementById('descricao').value;
+            const preco = parseFloat(document.getElementById('preco').value);
+            const disponibilidade = document.getElementById('disponibilidade').value === 'true';
+
+            const dadosServico = {
+                descricao,
+                preco,
+                disponibilidade
+            };
+
+            fetch('http://localhost:3000/adicionarServico', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dadosServico)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Serviço adicionado com sucesso!');
+                    document.getElementById('form-adicionar-servico').reset();
+                } else {
+                    alert('Erro ao adicionar serviço.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao adicionar serviço:', error);
+                alert('Erro ao adicionar serviço. Tente novamente mais tarde.');
+            });
+        });
+    </script>
+
+</body>
+</html>

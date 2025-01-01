@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Reservas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Histórico de Reservas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente CPF</th>
+                <th>Local ID</th>
+                <th>Data</th>
+                <th>Horário Início</th>
+                <th>Horário Fim</th>
+                <th>Número de Participantes</th>
+                <th>Status da Reserva</th>
+                <th>Status do Pagamento</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-reservas">
+            <!-- Dados inseridos via JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('http://localhost:3000/listarReservas')
+            .then(response => response.json())
+            .then(data => {
+                const tabela = document.getElementById('tabela-reservas');
+                tabela.innerHTML = '';
+
+                data.forEach(reserva => {
+                    const linha = `
+                        <tr>
+                            <td>${reserva.id}</td>
+                            <td>${reserva.cliente_cpf}</td>
+                            <td>${reserva.local_id}</td>
+                            <td>${reserva.data}</td>
+                            <td>${reserva.horario_inicio}</td>
+                            <td>${reserva.horario_fim}</td>
+                            <td>${reserva.numero_participantes}</td>
+                            <td>${reserva.status_reserva}</td>
+                            <td>${reserva.status_pagamento || 'N/A'}</td>
+                        </tr>
+                    `;
+                    tabela.innerHTML += linha;
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar o histórico de reservas:', error);
+                alert('Erro ao carregar o histórico de reservas. Tente novamente mais tarde.');
+            });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Serviço à Reserva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .alert {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            background-color: #28a745;
+        }
+
+        .error {
+            background-color: #dc3545;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Adicionar Serviço à Reserva</h1>
+        <div class="alert" id="alert"></div>
+        <form id="form-adicionar-servico">
+            <div class="form-group">
+                <label for="reserva">Selecione a Reserva:</label>
+                <select id="reserva" name="reserva">
+                    <!-- As opções de reserva serão inseridas dinamicamente -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="servico">Selecione o Serviço:</label>
+                <select id="servico" name="servico">
+                    <!-- As opções de serviço serão inseridas dinamicamente -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" id="quantidade" name="quantidade" min="1" required>
+            </div>
+
+            <button type="submit">Adicionar Serviço</button>
+        </form>
+    </div>
+
+    <script>
+        // Carregar as reservas
+        fetch('http://localhost:3000/listarReservas')
+            .then(response => response.json())
+            .then(data => {
+                const selectReserva = document.getElementById('reserva');
+                data.forEach(reserva => {
+                    const option = document.createElement('option');
+                    option.value = reserva.id;
+                    option.textContent = `Reserva #${reserva.id} - ${reserva.status_reserva}`;
+                    selectReserva.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar as reservas:', error);
+                showAlert('Erro ao carregar as reservas. Tente novamente mais tarde.', 'error');
+            });
+
+        // Carregar os serviços disponíveis
+        fetch('http://localhost:3000/listarServicos')
+            .then(response => response.json())
+            .then(data => {
+                const selectServico = document.getElementById('servico');
+                data.forEach(servico => {
+                    const option = document.createElement('option');
+                    option.value = servico.id;
+                    option.textContent = `${servico.descricao} - R$ ${servico.preco.toFixed(2)}`;
+                    selectServico.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar os serviços:', error);
+                showAlert('Erro ao carregar os serviços. Tente novamente mais tarde.', 'error');
+            });
+
+        // Enviar o formulário para adicionar o serviço à reserva
+        document.getElementById('form-adicionar-servico').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const reservaId = document.getElementById('reserva').value;
+            const servicoId = document.getElementById('servico').value;
+            const quantidade = document.getElementById('quantidade').value;
+
+            const dados = {
+                reserva_id: reservaId,
+                servico_id: servicoId,
+                quantidade: quantidade
+            };
+
+            fetch('http://localhost:3000/adicionarServicoReserva', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Serviço adicionado à reserva com sucesso!', 'success');
+                } else {
+                    showAlert('Erro ao adicionar serviço.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao adicionar serviço:', error);
+                showAlert('Erro ao adicionar serviço. Tente novamente mais tarde.', 'error');
+            });
+        });
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.classList.remove('success', 'error');
+            alert.classList.add(type);
+            alert.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

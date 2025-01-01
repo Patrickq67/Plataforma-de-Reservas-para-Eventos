@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Locais</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h1>Cadastro de Locais</h1>
+        <form id="cadastroLocalForm">
+            <input type="text" id="nome" placeholder="Nome do Local" required>
+            <textarea id="endereco" placeholder="Endereço" required></textarea>
+            <input type="number" id="capacidade" placeholder="Capacidade" required>
+            <input type="number" id="preco_por_hora" placeholder="Preço por Hora" step="0.01" required>
+            <textarea id="descricao" placeholder="Descrição (opcional)"></textarea>
+            <textarea id="equipamentos" placeholder="Equipamentos Disponíveis (opcional)"></textarea>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('cadastroLocalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('nome').value;
+            const endereco = document.getElementById('endereco').value;
+            const capacidade = document.getElementById('capacidade').value;
+            const preco_por_hora = document.getElementById('preco_por_hora').value;
+            const descricao = document.getElementById('descricao').value || null;
+            const equipamentos = document.getElementById('equipamentos').value || null;
+
+            const dados = { nome, endereco, capacidade, preco_por_hora, descricao, equipamentos };
+
+            fetch('http://localhost:3000/cadastrarLocal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Local cadastrado com sucesso!');
+                } else {
+                    alert('Erro ao cadastrar local.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro na comunicação com o servidor.');
+            });
+        });
+    </script>
+
+</body>
+</html>
