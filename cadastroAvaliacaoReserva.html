@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliar Contratação</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4c8bf5, #8bc6ec);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    
+        h1 {
+            text-align: center;
+            padding: 25px 30px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+    
+        form {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+    
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+    
+        input[type="number"], 
+        textarea, 
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+    
+        input:focus, 
+        textarea:focus {
+            border-color: #4c8bf5;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 139, 245, 0.5);
+        }
+    
+        textarea {
+            resize: none;
+        }
+    
+        button {
+            background: #4c8bf5;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+    
+        button:hover {
+            background: #3a6fd8;
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Avaliação de Contratos</h1>
+    <form id="formAvaliacao">
+        <label for="contrato_id">ID do Contrato:</label>
+        <input type="number" id="contrato_id" name="contrato_id" required><br>
+
+        <label for="cliente_cpf">CPF do Cliente:</label>
+        <input type="number" id="cliente_cpf" name="cliente_cpf" required><br>
+
+        <label for="terceirizado_id">ID do Terceirizado:</label>
+        <input type="number" id="terceirizado_id" name="terceirizado_id" required><br>
+
+        <label for="nota">Nota (1 a 5):</label>
+        <input type="number" id="nota" name="nota" min="1" max="5" required><br>
+
+        <label for="comentario">Comentário:</label><br>
+        <textarea id="comentario" name="comentario" rows="4" cols="50"></textarea><br>
+
+        <button type="submit">Cadastrar Avaliação</button>
+    </form>
+
+    <script>
+        document.getElementById('formAvaliacao').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = {
+                contrato_id: document.getElementById('contrato_id').value,
+                cliente_cpf: document.getElementById('cliente_cpf').value,
+                terceirizado_id: document.getElementById('terceirizado_id').value,
+                nota: document.getElementById('nota').value,
+                comentario: document.getElementById('comentario').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/cadastrarAvaliacao', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Avaliação cadastrada com sucesso!');
+                } else {
+                    alert('Erro ao cadastrar avaliação.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro na conexão com o servidor.');
+            }
+        });
+    </script>
+</body>
+</html>

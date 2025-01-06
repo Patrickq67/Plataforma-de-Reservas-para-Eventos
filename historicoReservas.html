@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Reservas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                display: block;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                display: block;
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 5px;
+                background-color: #fff;
+            }
+
+            td {
+                display: block;
+                text-align: right;
+                font-size: 0.9rem;
+                border: none;
+                padding: 8px;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-right: 10px;
+            }
+
+            td:last-child {
+                border-bottom: 1px solid #ddd;
+            }
+        }
+
+        /* Responsividade em telas muito pequenas */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+                /* ... (restante dos estilos) */
+        table {
+            display: table; /* Manter o comportamento padrão da tabela */
+            width: 100%;
+            overflow-x: auto; /* Habilitar rolagem horizontal se necessário */
+        }
+        /* Media queries para ajustar o layout */
+        @media (max-width: 768px) {
+            table th, td {
+                font-size: 14px;
+            }
+            /* Outros ajustes para telas menores */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Histórico de Reservas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente CPF</th>
+                <th>Local ID</th>
+                <th>Data</th>
+                <th>Horário Início</th>
+                <th>Horário Fim</th>
+                <th>Número de Participantes</th>
+                <th>Status da Reserva</th>
+                <th>Status do Pagamento</th>
+                <th>Avaliação</th>
+                <th>Comentário</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-reservas">
+            <!-- Dados inseridos via JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('http://localhost:3000/listarReservasComAvaliacoes')
+            .then(response => response.json())
+            .then(data => {
+                const tabela = document.getElementById('tabela-reservas');
+                tabela.innerHTML = '';
+
+                data.forEach(reserva => {
+                    const linha = `
+                        <tr>
+                            <td data-label="ID">${reserva.id}</td>
+                            <td data-label="Cliente CPF">${reserva.cliente_cpf}</td>
+                            <td data-label="Local ID">${reserva.local_id}</td>
+                            <td data-label="Data">${reserva.data}</td>
+                            <td data-label="Horário Início">${reserva.horario_inicio}</td>
+                            <td data-label="Horário Fim">${reserva.horario_fim}</td>
+                            <td data-label="Número de Participantes">${reserva.numero_participantes}</td>
+                            <td data-label="Status da Reserva">${reserva.status_reserva}</td>
+                            <td data-label="Status do Pagamento">${reserva.status_pagamento || 'N/A'}</td>
+                            <td data-label="Avaliação">${reserva.nota || 'Sem avaliação'}</td>
+                            <td data-label="Comentário">${reserva.comentario || 'Sem comentário'}</td>
+                        </tr>
+                    `;
+                    tabela.innerHTML += linha;
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar o histórico de reservas:', error);
+                alert('Erro ao carregar o histórico de reservas. Tente novamente mais tarde.');
+            });
+    </script>
+
+</body>
+</html>

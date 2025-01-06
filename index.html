@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Eventos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            height: 100vh;
+        }
+
+        .sidebar {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            display: grid;
+            grid-gap: 15px;
+            grid-auto-rows: min-content;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #0056b3;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra lateral com links -->
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a href="cadastroCliente.html" target="contentFrame">Cadastrar Cliente</a>
+        <a href="cadastroFuncionario.html" target="contentFrame">Cadastrar Funcionário</a>
+        <a href="cadastroLocais.html" target="contentFrame">Cadastrar Locais</a>
+        <a href="cadastroReservas.html" target="contentFrame">Cadastrar Reservas</a>
+        <a href="historicoReservas.html" target="contentFrame">Histórico de Reservas</a>
+        <a href="pagamentos.html" target="contentFrame">Pagamentos</a>
+        <a href="cadastrarServicos.html" target="contentFrame">Cadastrar Serviços</a>
+        <a href="cadastrarTerceirizados.html" target="contentFrame">Cadastrar Terceirizados</a>
+        <a href="exibirContratos.html" target="contentFrame">Exibir Contratos</a>
+        <a href="cadastroAvaliacaoReserva.html" target="contentFrame">Avaliar Contratação</a>
+        <a href="cadastroAvaliacaoReserva2.html" target="contentFrame">Avaliar Reserva</a>
+    </div>
+
+    <!-- Área de exibição do conteúdo -->
+    <div class="content">
+        <iframe name="contentFrame" src="cadastroReservas.html"></iframe>
+    </div>
+
+</body>
+</html>

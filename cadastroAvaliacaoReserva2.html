@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliar Reserva</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            background: linear-gradient(135deg, #f8b500, #fceabb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+    
+        h1 {
+            text-align: center;
+            padding: 25px 30px;
+            color: #4a4a4a;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+    
+        form {
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+    
+        label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+    
+        input[type="number"],
+        input[type="text"],
+        textarea,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    
+        input:focus, 
+        textarea:focus {
+            border-color: #f8b500;
+            outline: none;
+            box-shadow: 0 0 8px rgba(248, 181, 0, 0.5);
+        }
+    
+        textarea {
+            resize: none;
+        }
+    
+        button {
+            background: #f8b500;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+        }
+    
+        button:hover {
+            background: #e09c00;
+        }
+    
+        button:active {
+            transform: scale(0.98);
+        }
+    
+        #feedbackMessage p {
+            text-align: center;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Avaliar Reserva</h1>
+    <form id="formAvaliacaoReserva">
+        <label for="reserva_id">ID da Reserva:</label>
+        <input type="number" id="reserva_id" name="reserva_id" required><br>
+
+        <label for="cliente_cpf">CPF do Cliente:</label>
+        <input type="text" id="cliente_cpf" name="cliente_cpf" required><br>
+
+        <label for="nota">Nota (1 a 5):</label>
+        <input type="number" id="nota" name="nota" min="1" max="5" required><br>
+
+        <label for="comentario">Comentário:</label><br>
+        <textarea id="comentario" name="comentario" rows="4" cols="50"></textarea><br>
+
+        <button type="submit">Cadastrar Avaliação</button>
+    </form>
+
+    <div id="feedbackMessage"></div>
+
+    <script>
+        document.getElementById('formAvaliacaoReserva').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Limpa a mensagem anterior
+            document.getElementById('feedbackMessage').innerHTML = '';
+
+            const formData = {
+                reserva_id: document.getElementById('reserva_id').value,
+                cliente_cpf: document.getElementById('cliente_cpf').value,
+                nota: document.getElementById('nota').value,
+                comentario: document.getElementById('comentario').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/cadastrarAvaliacaoReserva', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('feedbackMessage').innerHTML = '<p style="color: green;">Avaliação cadastrada com sucesso!</p>';
+                } else {
+                    document.getElementById('feedbackMessage').innerHTML = '<p style="color: red;">Erro ao cadastrar avaliação.</p>';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('feedbackMessage').innerHTML = '<p style="color: red;">Erro na conexão com o servidor.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

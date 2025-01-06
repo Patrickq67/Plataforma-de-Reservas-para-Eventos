@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exibir Contratos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contratos Cadastrados</h1>
+
+    <h2>Lista de Contratos</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Terceirizado</th>
+                <th>Serviço</th>
+                <th>Data de Início</th>
+                <th>Data de Fim</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaContratos"></tbody>
+    </table>
+
+    <script>
+        // Função para buscar contratos cadastrados
+        function buscarContratos() {
+            fetch('http://localhost:3000/listarContratos')
+                .then(response => response.json())
+                .then(data => {
+                    const tabelaContratos = document.getElementById('tabelaContratos');
+                    tabelaContratos.innerHTML = ''; // Limpa a tabela antes de preencher
+                    data.contratos.forEach(contrato => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = ` 
+                            <td>${contrato.contrato_id}</td>
+                            <td>${contrato.cliente_nome}</td> <!-- Alterado para acessar 'cliente_nome' -->
+                            <td>${contrato.terceirizado_nome}</td>
+                            <td>${contrato.servico_descricao}</td>
+                            <td>${new Date(contrato.data_inicio).toLocaleDateString()}</td> <!-- Formatação da data -->
+                            <td>${contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString() : 'Não disponível'}</td> <!-- Verificando se há data de fim -->
+                            <td>${contrato.status}</td>
+                        `;
+                        tabelaContratos.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Erro ao buscar contratos:', error));
+        }
+    
+        // Chama a função para listar contratos ao carregar a página
+        window.onload = buscarContratos;
+    </script>
+</body>
+</html>
